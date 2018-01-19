@@ -1,27 +1,93 @@
-# HelloAngular
+# Hello Angular with Web Components
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.4.
+This is a sample app showing how to use Vaadin Elements and Web Compoenents inside **Angualr 5**.
 
-## Development server
+# Steps
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Install [npm](https://docs.npmjs.com/getting-started/installing-node).
 
-## Code scaffolding
+`$ npm install -g bower`
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`$ npm install -g @angular/cli`
 
-## Build
+`$ ng new hello-angular`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+`$ cd hello-angular`
 
-## Running unit tests
+`$ npm install --save @codebakery/origami` *We will use a third-party helper [library](https://github.com/hotforfeature/origami).*
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+`$ bower init` *Keep everything default*
 
-## Running end-to-end tests
+`$ cat > .bowerrc`
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+    {"directory": "src/assets/bower_components"}
+    ctrl+D
 
-## Further help
+`$ bower install --save Polymer/polymer`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+`$ bower install --save vaadin`
+
+#### Open src/index.html
+##### In `<head>` section, add:
+  ```html
+  <script src="assets/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="assets/bower_components/vaadin-valo-theme/vaadin-button.html">
+  <link rel="import" href="assets/bower_components/vaadin-button/vaadin-button.html">
+  <link rel="import" href="assets/bower_components/vaadin-valo-theme/vaadin-text-field.html">
+  <link rel="import" href="assets/bower_components/vaadin-text-field/vaadin-text-field.html">
+  ```
+
+#### Open src/main.ts
+##### In `import` section, add:
+  ```ts
+  import { webcomponentsReady } from '@codebakery/origami';
+  ```
+
+##### Wrap `platformBrowserDynamic` code with:
+  ```ts
+  webcomponentsReady().then(() => {
+    platformBrowserDynamic().bootstrapModule(AppModule)
+      .catch(err => console.log(err));
+  }).catch(error => {
+    // No WebComponent support and webcomponentsjs is not loaded
+    console.error(error);
+  });
+  ```
+
+#### Open src/app/app.module.ts
+##### In `import` section, update them:
+  ```ts
+  import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+  import { PolymerModule } from '@codebakery/origami';
+  ```
+
+##### Inside `@NgModule` definition, add:
+  ```ts
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  ```
+
+##### Inside `@NgModule` definition, add to the `imports` array:
+  ```ts
+  PolymerModule.forRoot(),
+  ```
+
+#### Open src/app/app.component.html
+##### Replace all the HTML code with:
+  ```html
+  <vaadin-text-field id="text" placeholder="Type Something"></vaadin-text-field>
+  <vaadin-button (click)='clicked()'>Click Me!</vaadin-button>
+  <h2>Hello {{title}}!</h2>
+  ```
+
+#### Open src/app/app.component.ts
+##### Inside the `class` define the click event:
+
+  ```ts
+  clicked() {
+    this.title = document.getElementById("text")["value"];
+  }
+  ```
+
+`$ ng serve --open`
+
+💰
