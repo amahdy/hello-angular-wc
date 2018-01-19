@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/amahdy/hello-angular-wc.svg?branch=master)](https://travis-ci.org/amahdy/hello-angular-wc)
+
 # Hello Angular with Web Components
 
 This is a sample app showing how to use Vaadin Elements and Web Compoenents inside **Angualr 5**.
